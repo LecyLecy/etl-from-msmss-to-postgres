@@ -28,4 +28,4 @@ conn = pyodbc.connect(conn_str)
 sql_query = 'SELECT * FROM Production.Culture'
 
 df = pd.read_sql_query(sql_query, conn)
-df.head()
+print(df.head())
