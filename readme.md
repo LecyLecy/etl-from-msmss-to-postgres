@@ -41,7 +41,7 @@ Create a `.env` file (not committed to git):
 ```env
 SqlId=etl
 SqlPass=your_password
-SSMS_Server=LAPTOP-JCT4NRE4\SQLEXPRESS
+SSMS_Server=your_ssms_server
 ```
 
 ---
@@ -49,12 +49,14 @@ SSMS_Server=LAPTOP-JCT4NRE4\SQLEXPRESS
 ## ETL Flow
 
 ### Extract
+
 - Connects to SQL Server using SQLAlchemy + pyodbc
 - Reads table metadata from `sys.tables` and `sys.schemas`
 - Explicitly selects columns (avoids `SELECT *`)
 - Casts unsupported types (e.g. `datetimeoffset → datetime2`)
 
 ### Load
+
 - Connects to PostgreSQL using SQLAlchemy + psycopg2
 - Loads data into staging tables (`stg_<table_name>`)
 - Uses `if_exists="replace"` for idempotent loads
@@ -81,5 +83,5 @@ python etl.py
 
 ## Status
 
-✅ Completed  
+✅ Completed
 This project represents a production-style ETL pipeline suitable for learning, coursework, and portfolio use.
