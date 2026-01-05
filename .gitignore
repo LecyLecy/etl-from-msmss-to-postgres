@@ -1,8 +1,14 @@
-venv310/
+# Virtual environments
 venv/
+venv310/
+
+# Environment variables
 .env
+
+# Python cache
 __pycache__/
 *.pyc
-C:\not_default\Projects\ETL_MSMSS_To_Postgres\how_to_activate_venv310.txt
-C:\not_default\Projects\ETL_MSMSS_To_Postgres\test_odbc_sql_server.py
 
+# Local helper / scratch files
+how_to_activate_venv310.txt
+test_odbc_sql_server.py

@@ -1,60 +1,85 @@
+# MSSQL to PostgreSQL ETL Pipeline
 
-# ETL: MSSQL to PostgreSQL
+This project implements an end-to-end ETL (Extract, Transform, Load) pipeline that transfers data from **Microsoft SQL Server (SSMS)** to **PostgreSQL** using **Python**, **SQLAlchemy**, **pyodbc**, and **pandas**.
 
-This project extracts data from Microsoft SQL Server, processes it using pandas, and loads the final dataset into PostgreSQL using SQLAlchemy.
+The pipeline is designed with real-world ETL practices in mind, including schema handling, type casting, and staging tables.
 
-## 1. Clone the Repository
+---
 
-```bash
-git clone https://github.com/USERNAME/REPO-NAME.git
-cd REPO-NAME
+## Tech Stack
+
+- Python 3.10
+- pandas
+- SQLAlchemy
+- pyodbc
+- psycopg2
+- Microsoft SQL Server (AdventureWorks2022)
+- PostgreSQL
+
+---
+
+## Project Structure
+
+```
+ETL_MSMSS_To_Postgres/
+│
+├── etl.py                    # Main ETL script
+├── requirements.txt          # Python dependencies
+├── README.md                 # Project documentation
+├── .gitignore                # Ignored files & folders
+├── .env                      # Environment variables (ignored)
+├── venv310/                  # Python virtual environment (ignored)
+└── test_odbc_sql_server.py   # Connection testing script
 ```
 
-## 2. Create a Virtual Environment
+---
 
-### Windows:
+## Environment Variables
 
-```bash
-python -m venv venv
-venv\Scripts\activate
+Create a `.env` file (not committed to git):
+
+```env
+SqlId=etl
+SqlPass=your_password
+SSMS_Server=LAPTOP-JCT4NRE4\SQLEXPRESS
 ```
 
-## 3. Install Dependencies
+---
+
+## ETL Flow
+
+### Extract
+- Connects to SQL Server using SQLAlchemy + pyodbc
+- Reads table metadata from `sys.tables` and `sys.schemas`
+- Explicitly selects columns (avoids `SELECT *`)
+- Casts unsupported types (e.g. `datetimeoffset → datetime2`)
+
+### Load
+- Connects to PostgreSQL using SQLAlchemy + psycopg2
+- Loads data into staging tables (`stg_<table_name>`)
+- Uses `if_exists="replace"` for idempotent loads
+
+---
+
+## How to Run
 
 ```bash
+venv310\Scripts\activate
 pip install -r requirements.txt
-```
-
-## 4. Create a `.env` File
-
-Create a file named `.env` in the project folder and fill in your database credentials:
-
-```
-MSSQL_CONN=DRIVER={ODBC Driver 17 for SQL Server};SERVER=localhost;DATABASE=AdventureWorks2022;UID=sa;PWD=yourpassword
-POSTGRES_CONN=postgresql://postgres:yourpassword@localhost:5432/etl_db
-```
-
-## 5. Run the ETL Script
-
-```bash
 python etl.py
 ```
 
-## 6. Project Structure
-
-```
-ETL_MSSQL_to_Postgres/
-│
-├── etl.py
-├── requirements.txt
-├── .gitignore
-├── .env
-├── README.md
-└── venv/
-```
+---
 
 ## Notes
 
-- The `.env` file is excluded from Git for security reasons.
-- The `venv` folder is not included in the repository. Users must create their own virtual environment.
-- Ensure that the correct ODBC driver for SQL Server is installed on your system.
+- `SELECT *` is intentionally avoided for cross-database compatibility
+- PostgreSQL permissions must allow `CREATE` on target schema
+- Designed for extensibility (incremental loads, upserts, schema separation)
+
+---
+
+## Status
+
+✅ Completed  
+This project represents a production-style ETL pipeline suitable for learning, coursework, and portfolio use.
